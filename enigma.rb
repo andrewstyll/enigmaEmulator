@@ -53,10 +53,17 @@ end
 def encodeMessage(message, rotors, reflector, rotorPos, rotorNotch, ringPos) #add a parameter for setting the rotation variation in here
     
     outString = ""
+    spaceOffset = 0 #to ignore spaces. This is unrealistic, but makes messages easier to read. I'd never make it in the army...
     for i in 0...message.length
         outChar = charToNum(message[i])
         
-        keys = makeKeys(i, rotorPos, rotorNotch, ringPos)
+        if outChar < 0 || outChar > 25 
+            spaceOffset += 1
+            outString << message[i]
+            next
+        end
+
+        keys = makeKeys(i-spaceOffset, rotorPos, rotorNotch, ringPos)
         
         for j in 0...rotors.length
             outChar = (outChar+keys[j])%26
@@ -76,22 +83,3 @@ def encodeMessage(message, rotors, reflector, rotorPos, rotorNotch, ringPos) #ad
     end
     return outString
 end
-
-rotor1 = stringToPerms("EKMFLGDQVZNTOWYHXUSPAIBRCJ")
-rotor2 = stringToPerms("AJDKSIRUXBLHWTMCQGZNPYFVOE")
-rotor3 = stringToPerms("BDFHJLCPRTXVZNYEIWGAKMUSQO")
-rotor4 = stringToPerms("ESOVPZJAYQUIRHXLNFTGKDCMWB")
-rotor5 = stringToPerms("VZBRGITYUPSDNHLXAWMJQOFECK")
-
-rotors = [rotor1, rotor2, rotor3, rotor4, rotor5]
-rotorNotches = [charToNum("Q"), charToNum("E"), charToNum("V"), charToNum("J"), charToNum("Z")]
-
-reflectorA = stringToPerms("EJMZALYXVBWFCRQUONTSPIKHGD")
-reflectorB = stringToPerms("YRUHQSLDPXNGOKMIEBFZCWVJAT")
-reflectorC = stringToPerms("FVPJIAOYEDRZXWGCTKUQSBNMHL")
-
-reflector = [reflectorA, reflectorB, reflectorC]
-
-puts encodeMessage("HELLO", [rotor1, rotor2, rotor3], reflector[1], [0, 0, 0], [16, 4, 21], [0, 0, 0])
-puts encodeMessage("MFNCZ", [rotor1, rotor2, rotor3], reflector[1], [0, 0, 0], [16, 4, 21], [0, 0, 0])
-#puts encodeMessage("EHPPK", [rotor1, rotor2, rotor3], reflector[1])

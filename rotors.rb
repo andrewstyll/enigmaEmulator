@@ -13,6 +13,8 @@ def getPerm(permSet, char)
     end
 end
 
+#returns the inverse permutation of the cycle
+
 def getPermInv(permSet, char)
     for i in 0..permSet.length
         if(char == permSet[i]) 
@@ -25,6 +27,9 @@ def getPermInv(permSet, char)
     end
 end
 
+#searches each permutation, looking for the cycle containing the mapping pertaining to the passed in character. This
+#function only works if the system only contains disjoint sets.
+
 def searchPerm(rotor, char, inverse)
     rotor.each do |set|
         if(set.include? char)
@@ -34,7 +39,9 @@ def searchPerm(rotor, char, inverse)
     return char
 end
 
-#I need notch position, starting rotor position, current letter count, ring positions
+#Create keys that can be used to simulate the movement of the rotors. Includes the double step movement which is why we
+#use 650 (25*26) instead of 676 (26*26). Takes into account the ring position, the starting rotor position, the current
+#character inputed and the notches on which each rotor rotates
 
 def makeKeys(charIndex, rotorPos, rotorNotch, ringPos)
     rStepCtrl1 = (rotorNotch[0] - rotorPos[0] - 1)%26

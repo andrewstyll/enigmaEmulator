@@ -1,0 +1,4 @@
+rotor: 1 2 3
+reflector: B
+rotorPosition: 0 0 0
+ringPosition: 0 0 0
