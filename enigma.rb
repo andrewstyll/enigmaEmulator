@@ -50,15 +50,28 @@ end
 #reflector and back again. maybe use different functions for each rotor?? IDK
 #as a first pass, write it as a 1 to 1, no rotations of the rotors thing.
 
-def encode(message, rotors) #add a parameter for setting the rotation variation in here
+def encodeMessage(message, rotors, reflector, rotorPos, rotorNotch, ringPos) #add a parameter for setting the rotation variation in here
     
     outString = ""
-    for i in 0..message.length-1
-        puts message[i]
+    for i in 0...message.length
         outChar = charToNum(message[i])
-        rotors.each do |rotor|
-            outChar = searchPerm(rotor, outChar, true)
+        
+        keys = makeKeys(i, rotorPos, rotorNotch, ringPos)
+        
+        for j in 0...rotors.length
+            outChar = (outChar+keys[j])%26
+            outChar = searchPerm(rotors[j], outChar, false)
+            outChar = (outChar-keys[j])%26
         end
+        
+        outChar = searchPerm(reflector, outChar, false)
+
+        for j in (rotors.length-1).downto(0)
+            outChar = (outChar+keys[j])%26
+            outChar = searchPerm(rotors[j], outChar, true)
+            outChar = (outChar-keys[j])%26
+        end
+
         outString << numToChar(outChar)
     end
     return outString
@@ -71,7 +84,7 @@ rotor4 = stringToPerms("ESOVPZJAYQUIRHXLNFTGKDCMWB")
 rotor5 = stringToPerms("VZBRGITYUPSDNHLXAWMJQOFECK")
 
 rotors = [rotor1, rotor2, rotor3, rotor4, rotor5]
-rotorFlip = [charToNum("Q"), charToNum("E"), charToNum("V"), charToNum("J"), charToNum("Z")]
+rotorNotches = [charToNum("Q"), charToNum("E"), charToNum("V"), charToNum("J"), charToNum("Z")]
 
 reflectorA = stringToPerms("EJMZALYXVBWFCRQUONTSPIKHGD")
 reflectorB = stringToPerms("YRUHQSLDPXNGOKMIEBFZCWVJAT")
@@ -79,5 +92,6 @@ reflectorC = stringToPerms("FVPJIAOYEDRZXWGCTKUQSBNMHL")
 
 reflector = [reflectorA, reflectorB, reflectorC]
 
-#puts encode("HELLO", [rotor1, rotor2, rotor3])
-puts encode("IPNNY", [rotor3, rotor2, rotor1])
+puts encodeMessage("HELLO", [rotor1, rotor2, rotor3], reflector[1], [0, 0, 0], [16, 4, 21], [0, 0, 0])
+puts encodeMessage("MFNCZ", [rotor1, rotor2, rotor3], reflector[1], [0, 0, 0], [16, 4, 21], [0, 0, 0])
+#puts encodeMessage("EHPPK", [rotor1, rotor2, rotor3], reflector[1])

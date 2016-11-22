@@ -33,3 +33,25 @@ def searchPerm(rotor, char, inverse)
     end
     return char
 end
+
+#I need notch position, starting rotor position, current letter count, ring positions
+
+def makeKeys(charIndex, rotorPos, rotorNotch, ringPos)
+    rStepCtrl1 = (rotorNotch[0] - rotorPos[0] - 1)%26
+    rStepCtrl = (rotorNotch[1]-rotorPos[1] - 1)%26
+    rStepCtrl2 = rStepCtrl1 + 1 + 26*(rStepCtrl)
+
+    rMove1 = (charIndex - rStepCtrl1+26)/26
+    rMove2 = (charIndex - rStepCtrl2+650)/650
+    rMove1 = (rMove1>0) ? rMove1.floor : rMove1.ceil
+    rMove2 = (rMove2>0) ? rMove2.floor : rMove2.ceil
+
+
+    key0 = (rotorPos[0] - ringPos[0] + 1) + charIndex
+    key1 = rotorPos[1] - ringPos[1] + rMove1 + rMove2
+    key2 = rotorPos[2] - ringPos[2] + rMove2
+    
+    keys = [key0, key1, key2]
+
+    return keys
+end
